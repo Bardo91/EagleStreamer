@@ -70,19 +70,11 @@ public class MainActivity extends Activity implements SensorEventListener {
         setContentView(R.layout.activity_main);
 
         ipInput_ = new EditText(this);
-        ipInput_.setInputType(InputType.TYPE_CLASS_NUMBER);
+        ipInput_.setInputType(InputType.TYPE_CLASS_PHONE);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         oriPub_ = new Publisher<>(9999);
-        counterSub_ = new Subscriber<>("192.168.1.49", 9998, new PacketInt());
-
-        counterSub_.registerCallback(new Callable<PacketInt>(){
-            @Override
-            public void run(PacketInt _data){
-                Log.d("EAGLE_STREAMER", String.valueOf(_data.data));
-            }
-        });
 
         mScreen = findViewById(R.id.screen);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -107,7 +99,13 @@ public class MainActivity extends Activity implements SensorEventListener {
                         .setView(ipInput_)
                         .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                // FIRE ZE MISSILES!
+                                counterSub_ = new Subscriber<>(ipInput_.getText().toString(), 9998, new PacketInt());
+                                counterSub_.registerCallback(new Callable<PacketInt>(){
+                                    @Override
+                                    public void run(PacketInt _data){
+                                        Log.d("EAGLE_STREAMER", String.valueOf(_data.data));
+                                    }
+                                });
                             }
                         })
                         .setNegativeButton("Do nothing", new DialogInterface.OnClickListener() {
