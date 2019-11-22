@@ -1,22 +1,14 @@
-package com.example.eaglestreamer;
+package com.example.eaglestreamer.com.example.eaglestreamer.fastcom;
 
 import android.util.Log;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutput;
-import java.io.ObjectOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Vector;
 
-interface Byteable{
-    byte[] getBytes();
-    int getSize();
-    void parse(byte[]_data);
-}
 
 public class Publisher<T_ extends  Byteable> {
 

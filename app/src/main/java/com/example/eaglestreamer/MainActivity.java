@@ -1,30 +1,32 @@
 package com.example.eaglestreamer;
 
-import com.example.eaglestreamer.Orientation;
-
-import androidx.appcompat.app.AppCompatActivity;
+import com.example.eaglestreamer.com.example.eaglestreamer.fastcom.Byteable;
+import com.example.eaglestreamer.com.example.eaglestreamer.fastcom.Callable;
+import com.example.eaglestreamer.com.example.eaglestreamer.fastcom.Publisher;
+import com.example.eaglestreamer.com.example.eaglestreamer.fastcom.Subscriber;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.telecom.Call;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-class PacketInt implements Byteable{
+class PacketInt implements Byteable {
 
     public int data;
 
@@ -52,7 +54,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     private SensorManager mSensorManager;
     private Sensor mOrientation;
-    private TextView mText;
+    private EditText ipInput_;
     private ImageView mScreen;
 
     private Publisher<Orientation> oriPub_;
@@ -67,11 +69,13 @@ public class MainActivity extends Activity implements SensorEventListener {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
+        ipInput_ = new EditText(this);
+        ipInput_.setInputType(InputType.TYPE_CLASS_NUMBER);
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         oriPub_ = new Publisher<>(9999);
-        counterSub_ = new Subscriber<>("192.168.1.48", 9998, new PacketInt());
+        counterSub_ = new Subscriber<>("192.168.1.49", 9998, new PacketInt());
 
         counterSub_.registerCallback(new Callable<PacketInt>(){
             @Override
@@ -96,6 +100,24 @@ public class MainActivity extends Activity implements SensorEventListener {
     protected void onResume() {
         super.onResume();
         mSensorManager.registerListener(this, mOrientation, SensorManager.SENSOR_DELAY_UI);
+
+        // IP SELECTOR
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose PC IP")
+                        .setView(ipInput_)
+                        .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // FIRE ZE MISSILES!
+                            }
+                        })
+                        .setNegativeButton("Do nothing", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User cancelled the dialog
+                            }
+                        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     @Override

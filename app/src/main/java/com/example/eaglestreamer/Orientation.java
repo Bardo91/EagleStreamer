@@ -1,5 +1,7 @@
 package com.example.eaglestreamer;
 
+import com.example.eaglestreamer.com.example.eaglestreamer.fastcom.Byteable;
+
 public class Orientation implements Byteable {
     public float azimut_;
     public float pitch_;

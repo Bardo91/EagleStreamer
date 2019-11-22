@@ -1,6 +1,4 @@
-package com.example.eaglestreamer;
-
-import android.util.Log;
+package com.example.eaglestreamer.com.example.eaglestreamer.fastcom;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -10,9 +8,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Vector;
 
-interface Callable<T_>{
-    void run(T_ _data);
-}
+
 
 public class Subscriber<T_ extends  Byteable>  {
 
@@ -79,7 +75,7 @@ public class Subscriber<T_ extends  Byteable>  {
         listenThread_.start();
     }
 
-    void registerCallback(Callable<T_> _cb){
+    public void registerCallback(Callable<T_> _cb){
         callbacks_.add(_cb);
     }
 }

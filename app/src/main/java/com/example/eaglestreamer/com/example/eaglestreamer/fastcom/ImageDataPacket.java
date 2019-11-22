@@ -1,4 +1,4 @@
-package com.example.eaglestreamer;
+package com.example.eaglestreamer.com.example.eaglestreamer.fastcom;
 
 public class ImageDataPacket implements Byteable {
     public int PACKET_SIZE = 1024;
