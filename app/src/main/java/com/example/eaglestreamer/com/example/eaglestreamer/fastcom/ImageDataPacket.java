@@ -1,5 +1,9 @@
 package com.example.eaglestreamer.com.example.eaglestreamer.fastcom;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 public class ImageDataPacket implements Byteable {
     public int PACKET_SIZE = 1024;
     public Boolean isFirst = false;
@@ -11,7 +15,20 @@ public class ImageDataPacket implements Byteable {
 
     @Override
     public byte[] getBytes() {
-        return new byte[0];
+        ByteArrayOutputStream packet = new BufferedOutputStream();
+        packet.write(PACKET_SIZE);
+        packet.write((byte)(isFirst? 1:0));
+        packet.write(packetId);
+        packet.write(numPackets);
+        packet.write(totalSize);
+        packet.write(packetSize);
+        try {
+            packet.write(buffer);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new byte[0];
+        }
+        return buffer;
     }
 
     @Override
