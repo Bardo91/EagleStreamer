@@ -13,6 +13,7 @@ import android.hardware.SensorManager;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.telecom.Call;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
@@ -20,6 +21,31 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
+class PacketInt implements Byteable{
+
+    public int data;
+
+    @Override
+    public byte[] getBytes() {
+        byte[] bytes = ByteBuffer.allocate(4).putInt(data).array();
+        return bytes;
+    }
+
+    @Override
+    public int getSize() {
+        return 4;
+    }
+
+    @Override
+    public void parse(byte[] _data) {
+        ByteBuffer buf = ByteBuffer.wrap(_data);
+        buf.order(ByteOrder.LITTLE_ENDIAN);
+        data = buf.getInt();
+    }
+}
 
 public class MainActivity extends Activity implements SensorEventListener {
 
@@ -30,6 +56,8 @@ public class MainActivity extends Activity implements SensorEventListener {
     private ImageView mScreen;
 
     private Publisher<Orientation> oriPub_;
+
+    private Subscriber<PacketInt> counterSub_;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,6 +71,14 @@ public class MainActivity extends Activity implements SensorEventListener {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
         oriPub_ = new Publisher<>(9999);
+        counterSub_ = new Subscriber<>("192.168.1.48", 9998, new PacketInt());
+
+        counterSub_.registerCallback(new Callable<PacketInt>(){
+            @Override
+            public void run(PacketInt _data){
+                Log.d("EAGLE_STREAMER", String.valueOf(_data.data));
+            }
+        });
 
         mScreen = findViewById(R.id.screen);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);

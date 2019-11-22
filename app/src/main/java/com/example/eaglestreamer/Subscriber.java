@@ -23,7 +23,7 @@ public class Subscriber<T_ extends  Byteable>  {
     private int port_;
     public Boolean run_;
 
-    public Vector<Callable> callbacks_;
+    public Vector<Callable> callbacks_ = new Vector<Callable>();
 
     public Subscriber(String _ip, int _port, T_ _mother){
         mother_ = _mother;
@@ -43,7 +43,7 @@ public class Subscriber<T_ extends  Byteable>  {
         try {
             addr = InetAddress.getByName(_ip);
             DatagramPacket receivePacket = new DatagramPacket(queryPacket, queryPacket.length, addr, _port);
-            socket_.receive(receivePacket);
+            socket_.send(receivePacket);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }catch (IOException e) {
@@ -77,5 +77,9 @@ public class Subscriber<T_ extends  Byteable>  {
         });
 
         listenThread_.start();
+    }
+
+    void registerCallback(Callable<T_> _cb){
+        callbacks_.add(_cb);
     }
 }
