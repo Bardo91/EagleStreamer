@@ -1,5 +1,7 @@
 package com.example.eaglestreamer;
 
+import com.example.eaglestreamer.Orientation;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -21,35 +23,6 @@ import java.io.Serializable;
 
 public class MainActivity extends Activity implements SensorEventListener {
 
-    private class Orientation implements Byteable {
-        public float azimut_;
-        public float pitch_;
-        public float roll_;
-
-        public byte[] getBytes(){
-            byte[] byteArray= new byte[12];
-
-            int intBits =  Float.floatToIntBits(azimut_);
-            byteArray[3] =  (byte) (intBits >> 24);
-            byteArray[2] =  (byte) (intBits >> 16);
-            byteArray[1] =  (byte) (intBits >> 8);
-            byteArray[0] =  (byte) (intBits);
-
-            intBits =  Float.floatToIntBits(pitch_);
-            byteArray[7] =  (byte) (intBits >> 24);
-            byteArray[6] =  (byte) (intBits >> 16);
-            byteArray[5] =  (byte) (intBits >> 8);
-            byteArray[4] =  (byte) (intBits);
-
-            intBits =  Float.floatToIntBits(roll_);
-            byteArray[11] =  (byte) (intBits >> 24);
-            byteArray[10] =  (byte) (intBits >> 16);
-            byteArray[9] =  (byte) (intBits >> 8);
-            byteArray[8] =  (byte) (intBits);
-
-            return byteArray;
-        }
-    }
 
     private SensorManager mSensorManager;
     private Sensor mOrientation;
@@ -101,7 +74,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         ori.azimut_= event.values[0];
         ori.pitch_= event.values[1];
         ori.roll_= event.values[2];
-        Log.d("EAGLE_STREAMER", String.valueOf(ori.azimut_)+", "+String.valueOf(ori.pitch_)+", "+String.valueOf(ori.roll_));
+        //Log.d("EAGLE_STREAMER", String.valueOf(ori.azimut_)+", "+String.valueOf(ori.pitch_)+", "+String.valueOf(ori.roll_));
         oriPub_.publish(ori);
     }
 }

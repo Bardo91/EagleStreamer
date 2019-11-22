@@ -12,8 +12,10 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.Vector;
 
-interface  Byteable{
+interface Byteable{
     byte[] getBytes();
+    int getSize();
+    void parse(byte[]_data);
 }
 
 public class Publisher<T_ extends  Byteable> {
