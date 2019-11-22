@@ -12,6 +12,7 @@ import java.util.Vector;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 
 public class ImageSubscriber {
 
@@ -29,27 +30,22 @@ public class ImageSubscriber {
         packetSubscriber_.registerCallback(new Callable<ImageDataPacket>() {
             @Override
             public void run(ImageDataPacket _data) {
-                Log.d("EAGLE_STREAMER", "Packet :" +String.valueOf(_data.packetId)+ " is " +(_data.isFirst? "fist":"not first"));
                 if(isFirst_ == _data.isFirst){
-                    try {
-                        totalBuffer_.write(_data.buffer);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        // Reset data
-                        isFirst_ = true;
-                        packetId_ = -1;
-                        totalBuffer_.reset();
-                        return;
-                    }
-
                     isFirst_ = false;
+
                     if(packetId_+1 == _data.packetId){
+                        totalBuffer_.write(_data.buffer,0,_data.packetSize);
+                        packetId_++;
+                        //Log.d("EAGLE_STREAMER", "Packet :" +String.valueOf(_data.packetId)+"/"+String.valueOf(_data.numPackets)+
+                        //        ". Size: " +String.valueOf(_data.packetSize)+
+                        //        ". buffer: "+String.valueOf(totalBuffer_.size())+"/"+String.valueOf(_data.totalSize));
+
                         if(totalBuffer_.size() == _data.totalSize){
                             // Decode buffer
                             Mat encodedImg = new Mat(1, totalBuffer_.size(), CvType.CV_8U);
                             encodedImg.put(0, 0, totalBuffer_.toByteArray());
                             Mat image = Imgcodecs.imdecode(encodedImg, 1);
-
+                            Imgproc.cvtColor(image, image, Imgproc.COLOR_RGB2BGR);
                             // Call callbacks
                             for (Callable cb:callbacks_) {
                                 cb.run(image);

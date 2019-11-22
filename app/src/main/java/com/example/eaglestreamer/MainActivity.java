@@ -45,6 +45,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     private ImageSubscriber imageSubscriber_;
 
+    private long lastTime = System.nanoTime();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,8 +120,11 @@ public class MainActivity extends Activity implements SensorEventListener {
 
                                     @Override
                                     public void run(Mat _data){
-                                        Log.d("EAGLE_STREAMER", "received new image");
+                                        //Log.d("EAGLE_STREAMER", "received new image");
                                         final Mat image = _data.clone();
+                                        double incT = (System.nanoTime()-lastTime)*10e-9;
+                                        //Log.d("EAGLE_STREAM", "IncT: " + String.valueOf(incT)+". FPS: " + String.valueOf(1/incT));
+                                        lastTime = System.nanoTime();
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
