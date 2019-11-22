@@ -130,7 +130,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         ori.azimut_= event.values[0];
         ori.pitch_= event.values[1];
         ori.roll_= event.values[2];
-        //Log.d("EAGLE_STREAMER", String.valueOf(ori.azimut_)+", "+String.valueOf(ori.pitch_)+", "+String.valueOf(ori.roll_));
+        Log.d("EAGLE_STREAMER", String.valueOf(ori.azimut_)+", "+String.valueOf(ori.pitch_)+", "+String.valueOf(ori.roll_));
         oriPub_.publish(ori);
     }
 }
