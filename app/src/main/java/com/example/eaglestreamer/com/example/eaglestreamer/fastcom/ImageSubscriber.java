@@ -1,9 +1,11 @@
 package com.example.eaglestreamer.com.example.eaglestreamer.fastcom;
 
 import android.renderscript.Matrix3f;
+import android.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Vector;
 
@@ -27,7 +29,19 @@ public class ImageSubscriber {
         packetSubscriber_.registerCallback(new Callable<ImageDataPacket>() {
             @Override
             public void run(ImageDataPacket _data) {
+                Log.d("EAGLE_STREAMER", "Packet :" +String.valueOf(_data.packetId)+ " is " +(_data.isFirst? "fist":"not first"));
                 if(isFirst_ == _data.isFirst){
+                    try {
+                        totalBuffer_.write(_data.buffer);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        // Reset data
+                        isFirst_ = true;
+                        packetId_ = -1;
+                        totalBuffer_.reset();
+                        return;
+                    }
+
                     isFirst_ = false;
                     if(packetId_+1 == _data.packetId){
                         if(totalBuffer_.size() == _data.totalSize){
