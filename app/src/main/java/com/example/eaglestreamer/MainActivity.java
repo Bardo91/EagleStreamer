@@ -115,7 +115,7 @@ public class MainActivity extends Activity implements SensorEventListener {
                         .setView(ipInput_)
                         .setPositiveButton("Connect", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                imageSubscriber_ = new ImageSubscriber(ipInput_.getText().toString(), 9998);
+                                imageSubscriber_ = new ImageSubscriber(ipInput_.getText().toString(), 9777);
                                 imageSubscriber_.registerCallback(new Callable<Mat>(){
 
                                     @Override
