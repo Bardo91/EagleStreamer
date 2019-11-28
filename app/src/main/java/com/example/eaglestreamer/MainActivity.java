@@ -30,10 +30,17 @@ import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.android.Utils;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends Activity implements SensorEventListener {
     private SensorManager mSensorManager;
@@ -64,7 +71,7 @@ public class MainActivity extends Activity implements SensorEventListener {
 
         mScreen = findViewById(R.id.screen);
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
+        mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 
     }
 
@@ -121,6 +128,9 @@ public class MainActivity extends Activity implements SensorEventListener {
                                     @Override
                                     public void run(Mat _data){
                                         //Log.d("EAGLE_STREAMER", "received new image");
+                                        //final Mat image = new Mat();
+                                        //List<Mat> src = Arrays.asList(_data.clone(), _data.clone());
+                                        //Core.hconcat(src, image);
                                         final Mat image = _data.clone();
                                         double incT = (System.nanoTime()-lastTime)*10e-9;
                                         //Log.d("EAGLE_STREAM", "IncT: " + String.valueOf(incT)+". FPS: " + String.valueOf(1/incT));
@@ -156,10 +166,11 @@ public class MainActivity extends Activity implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent event) {
         Orientation ori = new Orientation();
-        ori.azimut_= event.values[0];
-        ori.pitch_= event.values[1];
-        ori.roll_= event.values[2];
-        // Log.d("EAGLE_STREAMER", String.valueOf(ori.azimut_)+", "+String.valueOf(ori.pitch_)+", "+String.valueOf(ori.roll_));
+        ori.x= event.values[0];
+        ori.y= event.values[1];
+        ori.z= event.values[2];
+        ori.w= event.values[3];
+        //Log.d("EAGLE_STREAMER", String.valueOf(ori.azimut_)+", "+String.valueOf(ori.pitch_)+", "+String.valueOf(ori.roll_));
         oriPub_.publish(ori);
     }
 }
